@@ -31,6 +31,7 @@ func (log *Log) Append(record Record) (uint64, error) {
 	log.mu.Lock()
 	// Deferring unlock of mutex until record is appended
 	defer log.mu.Unlock()
+	record.Offset = uint64(len(log.records))
 	log.records = append(log.records, record)
 	return record.Offset, nil
 }
