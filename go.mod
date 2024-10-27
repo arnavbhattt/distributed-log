@@ -1,4 +1,4 @@
-module github.com/arnavbhattt/distributed-log
+module github.com/arnavbhattt/simple-log
 
 go 1.23.2
 

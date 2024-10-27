@@ -64,9 +64,32 @@ func (s *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	// Marshal struct to json
 	res := ProduceResponse{Offset: off}
+	err = json.NewEncoder(w).Encode(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+// Consume Handler
+func (s *httpServer) handleConsume(w http.ResponseWriter, r *http.Request) {
+	var req ConsumeRequest
+	// Unmarshal into struct
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// Read record
+	rec, err := s.Log.Read(req.Offset)
+	if err == ErrOffsetNotFound {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	// Marshal struct to JSON
+	res := ConsumeResponse{Record: rec}
 	err = json.NewEncoder(w).Encode(res)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
