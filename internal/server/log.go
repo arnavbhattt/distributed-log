@@ -1,5 +1,9 @@
 package server
 
+/*
+	Basic Commit Log Package - Data Structure for keeping track of records
+*/
+
 import (
 	"fmt"
 	"sync"
